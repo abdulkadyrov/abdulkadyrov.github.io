@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <title>Лото Онлайн</title>
+  <style>
+    body {
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(to right, #1e3c72, #2a5298);
+      color: white;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    h1 {
+      margin-top: 30px;
+      font-size: 36px;
+      text-align: center;
+    }
+
+    button {
+      margin: 10px;
+      padding: 12px 25px;
+      font-size: 18px;
+      background-color: #00c853;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #00b34a;
+    }
+
+    #number {
+      font-size: 80px;
+      margin: 30px 0 10px;
+      font-weight: bold;
+      animation: fadeIn 0.4s ease-out;
+    }
+
+    @keyframes fadeIn {
+      0% { transform: scale(0); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    #called {
+      margin-top: 30px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 12px;
+      padding: 20px;
+      max-width: 800px;
+      width: 90%;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    }
+
+    .called-title {
+      font-size: 22px;
+      margin-bottom: 10px;
+      text-align: center;
+    }
+
+    .called-numbers {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .called-numbers div {
+      background-color: rgba(255, 255, 255, 0.2);
+      padding: 10px 14px;
+      border-radius: 8px;
+      font-size: 20px;
+      font-weight: 600;
+    }
+
+    .end-message {
+      color: #ffcc00;
+      font-size: 24px;
+      margin-top: 20px;
+    }
+
+    #check-block {
+      margin-top: 40px;
+      background-color: rgba(255,255,255,0.08);
+      padding: 20px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 600px;
+    }
+
+    #check-inputs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    #check-inputs input {
+      width: 60px;
+      padding: 10px;
+      font-size: 18px;
+      border-radius: 8px;
+      border: none;
+      text-align: center;
+    }
+
+    #check-results {
+      margin-top: 10px;
+      font-size: 18px;
+      text-align: center;
+    }
+
+    #cheat-panel {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #cheat-input, #intervalInput {
+      width: 90%;
+      max-width: 400px;
+      padding: 10px;
+      font-size: 16px;
+      border-radius: 8px;
+      border: none;
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    #restart {
+      margin: 40px 0 20px;
+      background-color: #ff5252;
+    }
+
+    #restart:hover {
+      background-color: #e53935;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Лото Онлайн 🎲</h1>
+  <div id="number">–</div>
+  <button id="drawBtn" onclick="drawNumber()">🎲 Вытянуть номер</button>
+  <input id="intervalInput" type="number" min="1" value="2" placeholder="Интервал (сек)">
+  <button onclick="toggleAutoDraw()" id="autoBtn">▶ Авто-режим</button>
+  <button onclick="showCheatInput()">...</button>
+
+  <div id="cheat-panel" style="display:none;">
+    <p>Введите до 15 чисел через запятую:</p>
+    <input id="cheat-input" placeholder="например: 12,37,52,88" />
+    <br>
+    <button onclick="saveCheatNumbers()">Сохранить</button>
+  </div>
+
+  <div id="called">
+    <div class="called-title">Выпавшие номера:</div>
+    <div class="called-numbers" id="calledList"></div>
+  </div>
+
+  <div id="check-block">
+    <h3 style="text-align:center;">Проверить свои 5 чисел</h3>
+    <div id="check-inputs">
+      <input type="number" min="1" max="90">
+      <input type="number" min="1" max="90">
+      <input type="number" min="1" max="90">
+      <input type="number" min="1" max="90">
+      <input type="number" min="1" max="90">
+    </div>
+    <button onclick="checkNumbers()">Проверить</button>
+    <div id="check-results"></div>
+  </div>
+
+  <button id="restart" onclick="restartGame()">🔁 Перезапуск</button>
+
+  <script>
+    let numbers, calledNumbers, luckyNumbers, autoDrawInterval;
+    const numberEl = document.getElementById("number");
+    const calledListEl = document.getElementById("calledList");
+    const button = document.getElementById("drawBtn");
+    const autoBtn = document.getElementById("autoBtn");
+
+    initGame();
+
+    function initGame() {
+      numbers = Array.from({length: 90}, (_, i) => i + 1);
+      calledNumbers = [];
+      luckyNumbers = [];
+      clearInterval(autoDrawInterval);
+      autoDrawInterval = null;
+      numberEl.innerText = '–';
+      button.disabled = false;
+      autoBtn.disabled = false;
+      button.style.backgroundColor = "#00c853";
+      autoBtn.style.backgroundColor = "#00c853";
+      autoBtn.innerText = "▶ Авто-режим";
+      calledListEl.innerHTML = '';
+      document.getElementById('check-results').innerHTML = '';
+      const msg = document.querySelector(".end-message");
+      if (msg) msg.remove();
+    }
+
+    function drawNumber() {
+      if (numbers.length === 0) {
+        numberEl.innerText = "✔";
+        button.disabled = true;
+        autoBtn.disabled = true;
+        button.style.backgroundColor = "#777";
+        autoBtn.style.backgroundColor = "#777";
+        const msg = document.createElement('div');
+        msg.className = "end-message";
+        msg.innerText = "Все номера вытянуты!";
+        document.body.appendChild(msg);
+        if (autoDrawInterval) clearInterval(autoDrawInterval);
+        return;
+      }
+
+      let drawn;
+      const useLucky = Math.random() < 0.6;
+      const remainingLucky = luckyNumbers.filter(n => numbers.includes(n));
+
+      if (useLucky && remainingLucky.length > 0) {
+        drawn = remainingLucky[Math.floor(Math.random() * remainingLucky.length)];
+        numbers = numbers.filter(n => n !== drawn);
+      } else {
+        const index = Math.floor(Math.random() * numbers.length);
+        drawn = numbers.splice(index, 1)[0];
+      }
+
+      calledNumbers.push(drawn);
+
+      numberEl.style.animation = "none";
+      void numberEl.offsetWidth;
+      numberEl.style.animation = null;
+      numberEl.innerText = drawn;
+
+      const numDiv = document.createElement('div');
+      numDiv.textContent = drawn;
+      calledListEl.appendChild(numDiv);
+
+      speakNumber(drawn);
+    }
+
+    function speakNumber(num) {
+      const utterance = new SpeechSynthesisUtterance();
+      utterance.text = `Число ${num}`;
+      utterance.lang = 'ru-RU';
+      utterance.rate = 0.9;
+      speechSynthesis.speak(utterance);
+    }
+
+    function checkNumbers() {
+      const inputs = document.querySelectorAll('#check-inputs input');
+      const resultsEl = document.getElementById('check-results');
+      resultsEl.innerHTML = '';
+
+      inputs.forEach(input => {
+        const value = parseInt(input.value);
+        if (isNaN(value)) return;
+
+        const result = document.createElement('div');
+        result.innerHTML = `${value}: ${calledNumbers.includes(value) ? '✅ Был' : '❌ Не был'}`;
+        resultsEl.appendChild(result);
+      });
+    }
+
+    function showCheatInput() {
+      document.getElementById('cheat-panel').style.display = 'block';
+    }
+
+    function saveCheatNumbers() {
+      const raw = document.getElementById('cheat-input').value;
+      luckyNumbers = raw
+        .split(',')
+        .map(n => parseInt(n.trim()))
+        .filter(n => !isNaN(n) && n >= 1 && n <= 90)
+        .slice(0, 15);
+
+      alert(`Режим удачи активирован!\nВыбранные числа: ${luckyNumbers.join(', ')}`);
+      document.getElementById('cheat-panel').style.display = 'none';
+    }
+
+    function toggleAutoDraw() {
+      if (autoDrawInterval) {
+        clearInterval(autoDrawInterval);
+        autoDrawInterval = null;
+        autoBtn.innerText = "▶ Авто-режим";
+        autoBtn.style.backgroundColor = "#00c853";
+      } else {
+        let seconds = parseFloat(document.getElementById("intervalInput").value);
+        if (isNaN(seconds) || seconds <= 0) seconds = 2;
+        drawNumber();
+        autoDrawInterval = setInterval(drawNumber, seconds * 1000);
+        autoBtn.innerText = "⏸ Остановить";
+        autoBtn.style.backgroundColor = "#ff9800";
+      }
+    }
+
+    function restartGame() {
+      initGame();
+    }
+  </script>
+
+</body>
+</html>
