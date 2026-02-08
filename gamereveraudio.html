@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<title>Слова кувырком</title>
+<style>
+  body { 
+    font-family: Arial, sans-serif; 
+    text-align: center; 
+    margin-top: 50px; 
+    background-color: #064d00; /* темно-зеленый */
+  }
+
+  h1 {
+    color: #ffffff; /* белый */
+  }
+
+  h2 {
+    color: #ffffff; /* белый */
+    font-weight: bold;
+  }
+
+  button {
+    margin: 10px;
+    padding: 12px 25px;
+    font-size: 16px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: bold; /* жирный текст кнопок */
+  }
+
+  /* Изначальный голос — бежевый */
+  #startRecord1, #stopRecord1, #playReverse1 {
+    background-color: #f5f5dc; /* бежевый */
+    color: #000; /* черный текст */
+  }
+  #startRecord1:hover, #stopRecord1:hover, #playReverse1:hover {
+    background-color: #e0d9b0;
+  }
+
+  /* Перевернутый голос — коричневый */
+  #startRecord2, #stopRecord2, #playReverse2 {
+    background-color: #8b4513; /* коричневый */
+    color: #fff;
+  }
+  #startRecord2:hover, #stopRecord2:hover, #playReverse2:hover {
+    background-color: #5c2e07;
+  }
+
+  /* Сброс — красный */
+  #reset {
+    background-color: #dc3545;
+    color: #fff;
+  }
+  #reset:hover {
+    background-color: #a71d2a;
+  }
+
+  /* Отключенные кнопки */
+  button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
+</head>
+<body>
+
+<h1>Игра: Слова кувырком</h1>
+
+<h2>Изначальный голос</h2>
+<button id="startRecord1">Старт</button>
+<button id="stopRecord1" disabled>Стоп</button>
+<button id="playReverse1" disabled>Прослушать</button>
+
+<h2>Перевернутый голос</h2>
+<button id="startRecord2">Старт</button>
+<button id="stopRecord2" disabled>Стоп</button>
+<button id="playReverse2" disabled>Прослушать</button>
+
+<br>
+<button id="reset">Сброс</button>
+
+<script>
+const synth = window.speechSynthesis;
+const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+let mediaRecorder;
+let audioChunks1 = [];
+let audioChunks2 = [];
+let audioBuffer1 = null;
+let audioBuffer2 = null;
+
+// --- Запись ---
+async function startRecording(targetArray) {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  mediaRecorder = new MediaRecorder(stream);
+  targetArray.length = 0;
+
+  mediaRecorder.ondataavailable = e => targetArray.push(e.data);
+  mediaRecorder.start();
+
+  return () => {
+    return new Promise(resolve => {
+      mediaRecorder.onstop = () => {
+        stream.getTracks().forEach(track => track.stop());
+        resolve();
+      };
+      mediaRecorder.stop();
+    });
+  };
+}
+
+// --- Конвертация в AudioBuffer ---
+async function convertToBuffer(audioChunks) {
+  const blob = new Blob(audioChunks, { type: 'audio/webm' });
+  const arrayBuffer = await blob.arrayBuffer();
+  return await audioCtx.decodeAudioData(arrayBuffer);
+}
+
+// --- Воспроизведение в обратном порядке ---
+function playReverse(buffer) {
+  if (!buffer) return;
+
+  const reversedBuffer = audioCtx.createBuffer(
+    buffer.numberOfChannels,
+    buffer.length,
+    buffer.sampleRate
+  );
+
+  for (let i = 0; i < buffer.numberOfChannels; i++) {
+    const channelData = buffer.getChannelData(i);
+    const reversedData = reversedBuffer.getChannelData(i);
+    for (let j = 0; j < channelData.length; j++) {
+      reversedData[j] = channelData[channelData.length - j - 1];
+    }
+  }
+
+  const source = audioCtx.createBufferSource();
+  source.buffer = reversedBuffer;
+  source.connect(audioCtx.destination);
+  source.start();
+}
+
+// --- Изначальный голос ---
+let stopFunc1 = null;
+document.getElementById('startRecord1').onclick = async () => {
+  document.getElementById('startRecord1').disabled = true;
+  document.getElementById('stopRecord1').disabled = false;
+  stopFunc1 = await startRecording(audioChunks1);
+};
+
+document.getElementById('stopRecord1').onclick = async () => {
+  document.getElementById('stopRecord1').disabled = true;
+  await stopFunc1();
+  audioBuffer1 = await convertToBuffer(audioChunks1);
+  document.getElementById('playReverse1').disabled = false;
+  document.getElementById('startRecord1').disabled = false;
+};
+
+// --- Перевернутый голос ---
+let stopFunc2 = null;
+document.getElementById('startRecord2').onclick = async () => {
+  document.getElementById('startRecord2').disabled = true;
+  document.getElementById('stopRecord2').disabled = false;
+  stopFunc2 = await startRecording(audioChunks2);
+};
+
+document.getElementById('stopRecord2').onclick = async () => {
+  document.getElementById('stopRecord2').disabled = true;
+  await stopFunc2();
+  audioBuffer2 = await convertToBuffer(audioChunks2);
+  document.getElementById('playReverse2').disabled = false;
+  document.getElementById('startRecord2').disabled = false;
+};
+
+// --- Воспроизведение ---
+document.getElementById('playReverse1').onclick = () => playReverse(audioBuffer1);
+document.getElementById('playReverse2').onclick = () => playReverse(audioBuffer2);
+
+// --- Сброс ---
+document.getElementById('reset').onclick = () => {
+  audioChunks1 = [];
+  audioChunks2 = [];
+  audioBuffer1 = null;
+  audioBuffer2 = null;
+  document.getElementById('playReverse1').disabled = true;
+  document.getElementById('playReverse2').disabled = true;
+
+  const utterance = new SpeechSynthesisUtterance('Всё сброшено');
+  utterance.lang = 'ru-RU';
+  synth.speak(utterance);
+};
+</script>
+
+</body>
+</html>
