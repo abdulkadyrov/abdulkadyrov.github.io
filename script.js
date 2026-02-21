@@ -7,11 +7,13 @@ let gameOver = false;
 let selectedColor = null;
 let selectedCell = null;
 
+// Показ формы выбора количества цветов
 function showSetup(){
   document.getElementById("startBtn").classList.add("hidden");
   document.getElementById("setup").classList.remove("hidden");
 }
 
+// Игрок 1 создаёт секрет
 function createSecret(){
   count = parseInt(document.getElementById("countInput").value);
 
@@ -22,6 +24,7 @@ function createSecret(){
   createPalette("secretPalette", baseColors.slice(0,count));
 }
 
+// Создание доски (игрок 1 или 2)
 function createBoard(id){
   let board = document.getElementById(id);
   board.innerHTML = "";
@@ -33,7 +36,7 @@ function createBoard(id){
     cell.onclick = function(){
       if(gameOver) return;
 
-      // Вставка цвета
+      // Вставка выбранного цвета
       if(selectedColor){
         if(!cell.style.background){
           cell.style.background = selectedColor;
@@ -64,11 +67,12 @@ function createBoard(id){
   }
 }
 
-function createPalette(id, colorArray){
+// Создание палитры
+function createPalette(id, colors){
   let palette = document.getElementById(id);
   palette.innerHTML = "";
 
-  colorArray.forEach(color=>{
+  colors.forEach(color=>{
     let box = document.createElement("div");
     box.className = "color";
     box.style.background = color;
@@ -83,6 +87,7 @@ function createPalette(id, colorArray){
   });
 }
 
+// Удаление цвета из палитры после выбора
 function removeColorFromPalette(color){
   let palette = document.getElementById(
     document.getElementById("gameArea").classList.contains("hidden")
@@ -91,7 +96,6 @@ function removeColorFromPalette(color){
   );
 
   let boxes = palette.children;
-
   for(let box of boxes){
     if(box.style.background === color){
       palette.removeChild(box);
@@ -100,15 +104,18 @@ function removeColorFromPalette(color){
   }
 }
 
+// Выделение выбранного цвета
 function highlight(el){
   removeSelection();
   el.classList.add("selected");
 }
 
+// Удаление выделения
 function removeSelection(){
   document.querySelectorAll(".color").forEach(c=>c.classList.remove("selected"));
 }
 
+// Перемешивание массива (для палитры второго игрока)
 function shuffleArray(array){
   let arr = [...array];
   for(let i = arr.length - 1; i > 0; i--){
@@ -118,6 +125,7 @@ function shuffleArray(array){
   return arr;
 }
 
+// Начало игры для игрока 2
 function startGame(){
   let cells = document.getElementById("secretBoard").children;
   secret = [];
@@ -130,7 +138,6 @@ function startGame(){
     secret.push(cell.style.background);
   }
 
-  // Сброс состояния
   attempts = 0;
   gameOver = false;
   selectedColor = null;
@@ -139,25 +146,19 @@ function startGame(){
   document.getElementById("attemptCount").innerText = 0;
   document.getElementById("result").innerText = "";
 
-  // Переключаем экран
   document.getElementById("secretArea").classList.add("hidden");
   document.getElementById("gameArea").classList.remove("hidden");
-  document.getElementById("bottomBar").classList.remove("hidden");
 
-  // Перемешиваем
   let shuffled = shuffleArray(secret);
-
   while(JSON.stringify(shuffled) === JSON.stringify(secret)){
     shuffled = shuffleArray(secret);
   }
 
-  // Создаём доску игрока 2
   createBoard("guessBoard");
-
-  // Создаём палитру игрока 2
   createPalette("guessPalette", shuffled);
 }
 
+// Проверка совпадений
 function check(){
   if(gameOver) return;
 
@@ -171,7 +172,6 @@ function check(){
   }
 
   let correct = 0;
-
   for(let i=0;i<count;i++){
     if(cells[i].style.background === secret[i]){
       correct++;
@@ -188,14 +188,12 @@ function check(){
   }
 }
 
+// Кнопка «Сдаться» — показать правильные цвета
 function giveUp(){
   if(gameOver) return;
 
   gameOver = true;
-  showAnswer();
-}
 
-function showAnswer(){
   let answerBoard = document.getElementById("answerBoard");
   answerBoard.innerHTML = "";
   answerBoard.classList.remove("hidden");
@@ -209,6 +207,7 @@ function showAnswer(){
   }
 }
 
+// Перезапуск игры
 function restartGame(){
   location.reload();
 }
