@@ -8,12 +8,6 @@
 </head>
 <body>
 
-<div id="attempts" class="hidden">
-Попытки: <span id="attemptCount">0</span>
-</div>
-
-<button id="giveUpBtn" class="hidden giveup" onclick="giveUp()">Сдаться</button>
-
 <h1>Цветовая стратегия</h1>
 
 <button id="startBtn" onclick="showSetup()">Начать игру</button>
@@ -47,7 +41,15 @@
 
 <br>
 <button id="restartBtn" class="hidden" onclick="restartGame()">Рестарт</button>
+</div>
 
+<!-- НИЖНЯЯ ПАНЕЛЬ -->
+<div id="bottomBar" class="hidden">
+<div id="attemptsBox">
+Попытки: <span id="attemptCount">0</span>
+</div>
+
+<button id="giveUpBtn" onclick="giveUp()">Сдаться</button>
 </div>
 
 <script src="script.js"></script>
