@@ -26,9 +26,6 @@ function createBoard(id){
   let board = document.getElementById(id);
   board.innerHTML = "";
 
-  // Устанавливаем max-width для доски, чтобы до 5–6 ячеек по горизонтали
-  board.style.maxWidth = count <=6 ? (count*85) + "px" : "450px";
-
   for(let i=0;i<count;i++){
     let cell = document.createElement("div");
     cell.className = "cell";
@@ -68,7 +65,6 @@ function createBoard(id){
 function createPalette(id, colors){
   let palette = document.getElementById(id);
   palette.innerHTML = "";
-  palette.style.maxWidth = colors.length <=6 ? (colors.length*85) + "px" : "450px";
 
   colors.forEach(color=>{
     let box = document.createElement("div");
