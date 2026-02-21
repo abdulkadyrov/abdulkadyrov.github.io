@@ -30,7 +30,6 @@ function createBoard(id){
     cell.className = "cell";
     
     cell.onclick = function(){
-      
       if(gameOver) return;
 
       if(selectedColor){
@@ -141,11 +140,7 @@ function startGame(){
 
   document.getElementById("secretArea").classList.add("hidden");
   document.getElementById("gameArea").classList.remove("hidden");
-  document.getElementById("attempts").classList.remove("hidden");
-  document.getElementById("giveUpBtn").classList.remove("hidden");
-  document.getElementById("restartBtn").classList.add("hidden");
-  document.getElementById("answerBoard").classList.add("hidden");
-  document.getElementById("answerTitle").classList.add("hidden");
+  document.getElementById("bottomBar").classList.remove("hidden");
 
   let shuffled = shuffleArray(secret);
   while (JSON.stringify(shuffled) === JSON.stringify(secret)) {
@@ -188,8 +183,6 @@ function check(){
   
   if(correct === count){
     gameOver = true;
-    document.getElementById("giveUpBtn").classList.add("hidden");
-    document.getElementById("restartBtn").classList.remove("hidden");
     alert("Победа за " + attempts + " попыток!");
   }
 }
@@ -198,11 +191,6 @@ function giveUp(){
   if(gameOver) return;
 
   gameOver = true;
-
-  document.getElementById("giveUpBtn").classList.add("hidden");
-  document.getElementById("restartBtn").classList.remove("hidden");
-  document.getElementById("checkBtn").disabled = true;
-
   showAnswer();
 }
 
