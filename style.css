@@ -8,7 +8,6 @@ body {
   color: #111;
 }
 
-/* Скрытые элементы */
 .hidden {
   display: none;
 }
@@ -18,8 +17,13 @@ body {
   display: flex;
   justify-content: center;
   margin: 20px auto;
-  flex-wrap: wrap;      /* перенос на новые строки при необходимости */
-  gap: 10px;            /* отступ между ячейками */
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Доска адаптивна через CSS-переменную */
+.board[data-count] {
+  width: calc((65px + 10px) * var(--cols));
 }
 
 .cell, .color {
@@ -88,7 +92,6 @@ input {
   border-radius: 12px;
 }
 
-/* Отдельные кнопки панели */
 .checkBtn {
   background: black;
 }
