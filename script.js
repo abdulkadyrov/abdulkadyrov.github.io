@@ -25,6 +25,7 @@ function createSecret(){
 function createBoard(id){
   let board = document.getElementById(id);
   board.innerHTML = "";
+  board.style.setProperty('--cols', count <=6 ? count : 6);
 
   for(let i=0;i<count;i++){
     let cell = document.createElement("div");
@@ -65,6 +66,7 @@ function createBoard(id){
 function createPalette(id, colors){
   let palette = document.getElementById(id);
   palette.innerHTML = "";
+  palette.style.setProperty('--cols', colors.length <=6 ? colors.length : 6);
 
   colors.forEach(color=>{
     let box = document.createElement("div");
