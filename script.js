@@ -14,9 +14,10 @@ function showSetup(){
 
 function createSecret(){
   count = parseInt(document.getElementById("countInput").value);
+
   document.getElementById("setup").classList.add("hidden");
   document.getElementById("secretArea").classList.remove("hidden");
-  
+
   createBoard("secretBoard");
   createPalette("secretPalette", baseColors.slice(0,count));
 }
@@ -24,14 +25,15 @@ function createSecret(){
 function createBoard(id){
   let board = document.getElementById(id);
   board.innerHTML = "";
-  
+
   for(let i=0;i<count;i++){
     let cell = document.createElement("div");
     cell.className = "cell";
-    
+
     cell.onclick = function(){
       if(gameOver) return;
 
+      // Вставка цвета
       if(selectedColor){
         if(!cell.style.background){
           cell.style.background = selectedColor;
@@ -41,7 +43,8 @@ function createBoard(id){
         }
         return;
       }
-      
+
+      // Обмен между ячейками
       if(cell.style.background){
         if(selectedCell && selectedCell !== cell){
           let temp = selectedCell.style.background;
@@ -56,7 +59,7 @@ function createBoard(id){
         }
       }
     };
-    
+
     board.appendChild(cell);
   }
 }
@@ -64,37 +67,31 @@ function createBoard(id){
 function createPalette(id, colorArray){
   let palette = document.getElementById(id);
   palette.innerHTML = "";
-  
-  colorArray.forEach(color=>{
-    addColorToPalette(color, id);
-  });
-}
 
-function addColorToPalette(color, paletteId){
-  let palette = document.getElementById(paletteId);
-  
-  let box = document.createElement("div");
-  box.className = "color";
-  box.style.background = color;
-  
-  box.onclick = function(){
-    if(gameOver) return;
-    selectedColor = color;
-    highlight(box);
-  }
-  
-  palette.appendChild(box);
+  colorArray.forEach(color=>{
+    let box = document.createElement("div");
+    box.className = "color";
+    box.style.background = color;
+
+    box.onclick = function(){
+      if(gameOver) return;
+      selectedColor = color;
+      highlight(box);
+    };
+
+    palette.appendChild(box);
+  });
 }
 
 function removeColorFromPalette(color){
   let palette = document.getElementById(
     document.getElementById("gameArea").classList.contains("hidden")
-    ? "secretPalette"
-    : "guessPalette"
+      ? "secretPalette"
+      : "guessPalette"
   );
-  
+
   let boxes = palette.children;
-  
+
   for(let box of boxes){
     if(box.style.background === color){
       palette.removeChild(box);
@@ -112,9 +109,9 @@ function removeSelection(){
   document.querySelectorAll(".color").forEach(c=>c.classList.remove("selected"));
 }
 
-function shuffleArray(array) {
+function shuffleArray(array){
   let arr = [...array];
-  for (let i = arr.length - 1; i > 0; i--) {
+  for(let i = arr.length - 1; i > 0; i--){
     let j = Math.floor(Math.random() * (i + 1));
     [arr[i], arr[j]] = [arr[j], arr[i]];
   }
@@ -124,7 +121,7 @@ function shuffleArray(array) {
 function startGame(){
   let cells = document.getElementById("secretBoard").children;
   secret = [];
-  
+
   for(let cell of cells){
     if(!cell.style.background){
       alert("Заполни все ячейки!");
@@ -132,55 +129,59 @@ function startGame(){
     }
     secret.push(cell.style.background);
   }
-  
+
+  // Сброс состояния
   attempts = 0;
   gameOver = false;
-  document.getElementById("attemptCount").innerText = 0;
-  document.getElementById("checkBtn").disabled = false;
+  selectedColor = null;
+  selectedCell = null;
 
+  document.getElementById("attemptCount").innerText = 0;
+  document.getElementById("result").innerText = "";
+
+  // Переключаем экран
   document.getElementById("secretArea").classList.add("hidden");
   document.getElementById("gameArea").classList.remove("hidden");
   document.getElementById("bottomBar").classList.remove("hidden");
 
+  // Перемешиваем
   let shuffled = shuffleArray(secret);
-  while (JSON.stringify(shuffled) === JSON.stringify(secret)) {
+
+  while(JSON.stringify(shuffled) === JSON.stringify(secret)){
     shuffled = shuffleArray(secret);
   }
-  
+
+  // Создаём доску игрока 2
   createBoard("guessBoard");
-  
-  let palette = document.getElementById("guessPalette");
-  palette.innerHTML = "";
-  
-  shuffled.forEach(color=>{
-    addColorToPalette(color, "guessPalette");
-  });
+
+  // Создаём палитру игрока 2
+  createPalette("guessPalette", shuffled);
 }
 
 function check(){
   if(gameOver) return;
 
   let cells = document.getElementById("guessBoard").children;
-  
+
   for(let cell of cells){
     if(!cell.style.background){
       alert("Заполни все ячейки!");
       return;
     }
   }
-  
+
   let correct = 0;
-  
+
   for(let i=0;i<count;i++){
     if(cells[i].style.background === secret[i]){
       correct++;
     }
   }
-  
+
   attempts++;
   document.getElementById("attemptCount").innerText = attempts;
   document.getElementById("result").innerText = "Совпадений: " + correct;
-  
+
   if(correct === count){
     gameOver = true;
     alert("Победа за " + attempts + " попыток!");
