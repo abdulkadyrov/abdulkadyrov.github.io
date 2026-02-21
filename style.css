@@ -12,24 +12,6 @@ body {
   display: none;
 }
 
-#attempts {
-  position: fixed;
-  left: 20px;
-  top: 20px;
-  font-size: 22px;
-  background: rgba(255,255,255,0.8);
-  padding: 10px 15px;
-  border-radius: 12px;
-}
-
-.giveup {
-  position: fixed;
-  right: 20px;
-  top: 20px;
-  background: red;
-  color: white;
-}
-
 .board, .palette {
   display: flex;
   justify-content: center;
@@ -76,10 +58,6 @@ button:hover {
   transform: scale(1.1);
 }
 
-h1, h2, h3 {
-  font-weight: bold;
-}
-
 input {
   padding: 8px;
   font-size: 16px;
@@ -87,4 +65,22 @@ input {
   border-radius: 8px;
   border: none;
   text-align: center;
+}
+
+/* Нижняя панель */
+#bottomBar {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 20px;
+  background: rgba(0,0,0,0.6);
+  color: white;
+  box-sizing: border-box;
+}
+
+#giveUpBtn {
+  background: red;
 }
