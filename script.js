@@ -1,0 +1,225 @@
+let baseColors = ["red","blue","green","yellow","purple","orange","pink","brown"];
+let count = 4;
+let secret = [];
+let attempts = 0;
+let gameOver = false;
+
+let selectedColor = null;
+let selectedCell = null;
+
+function showSetup(){
+  document.getElementById("startBtn").classList.add("hidden");
+  document.getElementById("setup").classList.remove("hidden");
+}
+
+function createSecret(){
+  count = parseInt(document.getElementById("countInput").value);
+  document.getElementById("setup").classList.add("hidden");
+  document.getElementById("secretArea").classList.remove("hidden");
+  
+  createBoard("secretBoard");
+  createPalette("secretPalette", baseColors.slice(0,count));
+}
+
+function createBoard(id){
+  let board = document.getElementById(id);
+  board.innerHTML = "";
+  
+  for(let i=0;i<count;i++){
+    let cell = document.createElement("div");
+    cell.className = "cell";
+    
+    cell.onclick = function(){
+      
+      if(gameOver) return;
+
+      if(selectedColor){
+        if(!cell.style.background){
+          cell.style.background = selectedColor;
+          removeColorFromPalette(selectedColor);
+          selectedColor = null;
+          removeSelection();
+        }
+        return;
+      }
+      
+      if(cell.style.background){
+        if(selectedCell && selectedCell !== cell){
+          let temp = selectedCell.style.background;
+          selectedCell.style.background = cell.style.background;
+          cell.style.background = temp;
+          selectedCell.classList.remove("selected");
+          selectedCell = null;
+        } else {
+          if(selectedCell) selectedCell.classList.remove("selected");
+          selectedCell = cell;
+          cell.classList.add("selected");
+        }
+      }
+    };
+    
+    board.appendChild(cell);
+  }
+}
+
+function createPalette(id, colorArray){
+  let palette = document.getElementById(id);
+  palette.innerHTML = "";
+  
+  colorArray.forEach(color=>{
+    addColorToPalette(color, id);
+  });
+}
+
+function addColorToPalette(color, paletteId){
+  let palette = document.getElementById(paletteId);
+  
+  let box = document.createElement("div");
+  box.className = "color";
+  box.style.background = color;
+  
+  box.onclick = function(){
+    if(gameOver) return;
+    selectedColor = color;
+    highlight(box);
+  }
+  
+  palette.appendChild(box);
+}
+
+function removeColorFromPalette(color){
+  let palette = document.getElementById(
+    document.getElementById("gameArea").classList.contains("hidden")
+    ? "secretPalette"
+    : "guessPalette"
+  );
+  
+  let boxes = palette.children;
+  
+  for(let box of boxes){
+    if(box.style.background === color){
+      palette.removeChild(box);
+      break;
+    }
+  }
+}
+
+function highlight(el){
+  removeSelection();
+  el.classList.add("selected");
+}
+
+function removeSelection(){
+  document.querySelectorAll(".color").forEach(c=>c.classList.remove("selected"));
+}
+
+function shuffleArray(array) {
+  let arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    let j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+function startGame(){
+  let cells = document.getElementById("secretBoard").children;
+  secret = [];
+  
+  for(let cell of cells){
+    if(!cell.style.background){
+      alert("Заполни все ячейки!");
+      return;
+    }
+    secret.push(cell.style.background);
+  }
+  
+  attempts = 0;
+  gameOver = false;
+  document.getElementById("attemptCount").innerText = 0;
+  document.getElementById("checkBtn").disabled = false;
+
+  document.getElementById("secretArea").classList.add("hidden");
+  document.getElementById("gameArea").classList.remove("hidden");
+  document.getElementById("attempts").classList.remove("hidden");
+  document.getElementById("giveUpBtn").classList.remove("hidden");
+  document.getElementById("restartBtn").classList.add("hidden");
+  document.getElementById("answerBoard").classList.add("hidden");
+  document.getElementById("answerTitle").classList.add("hidden");
+
+  let shuffled = shuffleArray(secret);
+  while (JSON.stringify(shuffled) === JSON.stringify(secret)) {
+    shuffled = shuffleArray(secret);
+  }
+  
+  createBoard("guessBoard");
+  
+  let palette = document.getElementById("guessPalette");
+  palette.innerHTML = "";
+  
+  shuffled.forEach(color=>{
+    addColorToPalette(color, "guessPalette");
+  });
+}
+
+function check(){
+  if(gameOver) return;
+
+  let cells = document.getElementById("guessBoard").children;
+  
+  for(let cell of cells){
+    if(!cell.style.background){
+      alert("Заполни все ячейки!");
+      return;
+    }
+  }
+  
+  let correct = 0;
+  
+  for(let i=0;i<count;i++){
+    if(cells[i].style.background === secret[i]){
+      correct++;
+    }
+  }
+  
+  attempts++;
+  document.getElementById("attemptCount").innerText = attempts;
+  document.getElementById("result").innerText = "Совпадений: " + correct;
+  
+  if(correct === count){
+    gameOver = true;
+    document.getElementById("giveUpBtn").classList.add("hidden");
+    document.getElementById("restartBtn").classList.remove("hidden");
+    alert("Победа за " + attempts + " попыток!");
+  }
+}
+
+function giveUp(){
+  if(gameOver) return;
+
+  gameOver = true;
+
+  document.getElementById("giveUpBtn").classList.add("hidden");
+  document.getElementById("restartBtn").classList.remove("hidden");
+  document.getElementById("checkBtn").disabled = true;
+
+  showAnswer();
+}
+
+function showAnswer(){
+  let answerBoard = document.getElementById("answerBoard");
+  answerBoard.innerHTML = "";
+  answerBoard.classList.remove("hidden");
+  document.getElementById("answerTitle").classList.remove("hidden");
+
+  for(let i=0;i<secret.length;i++){
+    let cell = document.createElement("div");
+    cell.className = "cell";
+    cell.style.background = secret[i];
+    answerBoard.appendChild(cell);
+  }
+}
+
+function restartGame(){
+  location.reload();
+}
