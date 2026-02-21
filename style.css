@@ -8,6 +8,7 @@ body {
   color: #111;
 }
 
+/* Скрытые элементы */
 .hidden {
   display: none;
 }
@@ -17,14 +18,13 @@ body {
   display: flex;
   justify-content: center;
   margin: 20px auto;
-  flex-wrap: wrap;
-  max-width: 450px; /* ограничиваем ширину, чтобы при 7-8 цветах перенос был на второй ряд */
+  flex-wrap: wrap;      /* перенос на новые строки при необходимости */
+  gap: 10px;            /* отступ между ячейками */
 }
 
 .cell, .color {
   width: 65px;
   height: 65px;
-  margin: 10px;
   border-radius: 15px;
   border: 3px solid #222;
   cursor: pointer;
@@ -43,6 +43,7 @@ body {
   outline: 4px solid black;
 }
 
+/* Кнопки */
 button {
   padding: 12px 25px;
   font-size: 18px;
@@ -59,6 +60,7 @@ button:hover {
   transform: scale(1.05);
 }
 
+/* Поля ввода */
 input {
   padding: 8px;
   font-size: 16px;
@@ -68,7 +70,7 @@ input {
   text-align: center;
 }
 
-/* Панель управления */
+/* Панель управления под доской */
 .gameControls {
   display: flex;
   justify-content: space-between;
@@ -77,10 +79,16 @@ input {
   max-width: 600px;
 }
 
+/* Счётчик попыток */
 .attemptBox {
   font-size: 20px;
+  background: black;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 12px;
 }
 
+/* Отдельные кнопки панели */
 .checkBtn {
   background: black;
 }
