@@ -3,7 +3,7 @@ body {
   text-align: center;
   background: linear-gradient(135deg, #4fc3f7, #ff9800);
   margin: 0;
-  padding: 0;
+  padding: 20px;
   font-weight: bold;
   color: #111;
 }
@@ -34,18 +34,17 @@ body {
 }
 
 .color:hover {
-  transform: scale(1.15);
+  transform: scale(1.1);
 }
 
 .selected {
-  outline: 5px solid black;
+  outline: 4px solid black;
 }
 
 button {
   padding: 12px 25px;
   font-size: 18px;
   cursor: pointer;
-  margin: 15px;
   border: none;
   border-radius: 12px;
   background: black;
@@ -55,7 +54,7 @@ button {
 }
 
 button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
 }
 
 input {
@@ -67,20 +66,23 @@ input {
   text-align: center;
 }
 
-/* Нижняя панель */
-#bottomBar {
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  width: 100%;
+/* Панель под игрой */
+.gameControls {
   display: flex;
   justify-content: space-between;
-  padding: 15px 20px;
-  background: rgba(0,0,0,0.6);
-  color: white;
-  box-sizing: border-box;
+  align-items: center;
+  margin: 30px auto;
+  max-width: 600px;
 }
 
-#giveUpBtn {
+.attemptBox {
+  font-size: 20px;
+}
+
+.checkBtn {
+  background: black;
+}
+
+.giveUpBtn {
   background: red;
 }
