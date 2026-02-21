@@ -8,46 +8,39 @@
 </head>
 <body>
 
-<div id="attempts" class="hidden">
-Попытки: <span id="attemptCount">0</span>
-</div>
-
-<button id="giveUpBtn" class="hidden giveup" onclick="giveUp()">Сдаться</button>
-
 <h1>Цветовая стратегия</h1>
 
 <button id="startBtn" onclick="showSetup()">Начать игру</button>
 
 <div id="setup" class="hidden">
-<h2>Выбери количество цветов (3-8)</h2>
-<input type="number" id="countInput" min="3" max="8" value="4">
-<br><br>
-<button onclick="createSecret()">Далее</button>
+  <h2>Выбери количество цветов (3-8)</h2>
+  <input type="number" id="countInput" min="3" max="8" value="4">
+  <br><br>
+  <button onclick="createSecret()">Далее</button>
 </div>
 
 <div id="secretArea" class="hidden">
-<h2>Игрок 1 — собери секрет</h2>
-<div class="board" id="secretBoard"></div>
-<div class="palette" id="secretPalette"></div>
-<button onclick="startGame()">Готово</button>
+  <h2>Игрок 1 — собери секрет</h2>
+  <div class="board" id="secretBoard"></div>
+  <div class="palette" id="secretPalette"></div>
+  <button onclick="startGame()">Готово</button>
 </div>
 
 <div id="gameArea" class="hidden">
-<h2>Игрок 2</h2>
+  <h2>Игрок 2</h2>
 
-<div class="board" id="guessBoard"></div>
-<div class="palette" id="guessPalette"></div>
+  <div class="board" id="guessBoard"></div>
+  <div class="palette" id="guessPalette"></div>
 
-<button id="checkBtn" onclick="check()">Проверка</button>
+  <div class="gameControls">
+    <div class="attemptBox">Попытки: <span id="attemptCount">0</span></div>
+    <button class="checkBtn" onclick="check()">Проверка</button>
+    <button class="giveUpBtn" onclick="giveUp()">Сдаться</button>
+  </div>
 
-<h3 id="result"></h3>
-
-<h3 id="answerTitle" class="hidden">Правильная комбинация:</h3>
-<div class="board hidden" id="answerBoard"></div>
-
-<br>
-<button id="restartBtn" class="hidden" onclick="restartGame()">Рестарт</button>
-
+  <h3 id="result"></h3>
+  <h3 id="answerTitle" class="hidden">Правильная комбинация:</h3>
+  <div class="board hidden" id="answerBoard"></div>
 </div>
 
 <script src="script.js"></script>
