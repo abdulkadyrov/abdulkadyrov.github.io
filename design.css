@@ -1,0 +1,159 @@
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', sans-serif;
+  background: linear-gradient(to right, #1e3c72, #2a5298);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-height: 100vh;
+}
+
+h1 {
+  margin-top: 20px;
+  font-size: 36px;
+  text-align: center;
+}
+
+#number {
+  font-size: 80px;
+  margin: 20px 0;
+  font-weight: bold;
+  animation: fadeIn 0.4s ease-out;
+}
+
+#remaining {
+  font-size: 20px;
+  margin-bottom: 15px;
+  font-weight: bold;
+}
+
+.controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 15px;
+}
+
+button {
+  padding: 12px 20px;
+  font-size: 18px;
+  background-color: #00c853;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: 0.2s;
+  font-weight: bold;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+}
+
+button:hover {
+  background-color: #00b34a;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(0,0,0,0.25);
+}
+
+button:active {
+  transform: translateY(1px);
+  box-shadow: 0 3px 6px rgba(0,0,0,0.2);
+}
+
+#called {
+  width: 90%;
+  max-width: 800px;
+  margin-top: 15px;
+}
+
+.called-title {
+  text-align: center;
+  font-size: 22px;
+  margin-bottom: 10px;
+}
+
+.called-numbers {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+}
+
+.called-numbers div {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 20px;
+  font-weight: 600;
+  opacity: 0;
+  animation: fadeInNum 0.5s forwards;
+}
+
+@keyframes fadeInNum {
+  from {opacity: 0; transform: scale(0.8);}
+  to {opacity: 1; transform: scale(1);}
+}
+
+#check-block {
+  margin-top: 20px;
+  background-color: rgba(255,255,255,0.08);
+  padding: 15px;
+  border-radius: 12px;
+  width: 90%;
+  max-width: 600px;
+  text-align: center;
+}
+
+#check-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin-bottom: 10px;
+}
+
+#check-inputs input {
+  width: 60px;
+  padding: 10px;
+  font-size: 18px;
+  border-radius: 8px;
+  border: none;
+  text-align: center;
+}
+
+#check-results {
+  margin-top: 10px;
+  font-size: 18px;
+  text-align: center;
+}
+
+#cheat-panel {
+  margin-top: 15px;
+  text-align: center;
+}
+
+#cheat-input, #intervalInput {
+  width: 90%;
+  max-width: 400px;
+  padding: 10px;
+  font-size: 16px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 10px;
+  text-align: center;
+}
+
+#restart {
+  margin: 30px 0 20px;
+  background-color: #ff5252;
+}
+
+#restart:hover {
+  background-color: #e53935;
+}
+
+@keyframes fadeIn {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
