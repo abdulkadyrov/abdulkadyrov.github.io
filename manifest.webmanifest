@@ -1,0 +1,20 @@
+{
+  "name": "Лото Онлайн",
+  "short_name": "Лото",
+  "description": "Адаптивная игра в лото с локальным сохранением и офлайн-режимом.",
+  "start_url": "./loto.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#163868",
+  "theme_color": "#163868",
+  "lang": "ru",
+  "orientation": "any",
+  "icons": [
+    {
+      "src": "./icons/loto-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -2,49 +2,70 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#163868">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>Лото Онлайн</title>
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/loto-icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="icons/loto-icon.svg">
   <link rel="stylesheet" href="design.css">
 </head>
 <body>
+<main class="app-shell">
+  <section class="hero">
+    <p class="eyebrow">PWA-версия</p>
+    <h1>Лото Онлайн 🎲</h1>
+    <p class="subtitle">Работает на телефоне, планшете и компьютере. Состояние игры сохраняется локально.</p>
+  </section>
 
-<h1>Лото Онлайн 🎲</h1>
+  <section class="status-card">
+    <div id="number" aria-live="polite">–</div>
+    <div id="remaining">Осталось: 90</div>
+  </section>
 
-<div id="number">–</div>
-<div id="remaining">Осталось: 90</div>
+  <section class="controls-card">
+    <div class="controls">
+      <button id="drawBtn" type="button" onclick="drawNumber()">🎲 Вытянуть номер</button>
+      <label class="field">
+        <span>Интервал, сек</span>
+        <input id="intervalInput" type="number" min="1" step="0.5" value="2" placeholder="Интервал (сек)">
+      </label>
+      <button type="button" onclick="toggleAutoDraw()" id="autoBtn">▶ Авто-режим</button>
+      <button type="button" class="ghost-btn" onclick="showCheatInput()">⚙ Удача</button>
+    </div>
+  </section>
 
-<div class="controls">
-  <button id="drawBtn" onclick="drawNumber()">🎲 Вытянуть номер</button>
-  <input id="intervalInput" type="number" min="1" value="2" placeholder="Интервал (сек)">
-  <button onclick="toggleAutoDraw()" id="autoBtn">▶ Авто-режим</button>
-  <button onclick="showCheatInput()">...</button>
-</div>
+  <section id="cheat-panel" class="panel hidden" aria-hidden="true">
+    <p>Введите до 15 чисел через запятую:</p>
+    <input id="cheat-input" placeholder="например: 12, 37, 52, 88" />
+    <div class="panel-actions">
+      <button type="button" onclick="saveCheatNumbers()">Сохранить</button>
+      <button type="button" class="ghost-btn" onclick="showCheatInput(false)">Скрыть</button>
+    </div>
+  </section>
 
-<div id="cheat-panel" style="display:none;">
-  <p>Введите до 15 чисел через запятую:</p>
-  <input id="cheat-input" placeholder="например: 12,37,52,88" />
-  <br>
-  <button onclick="saveCheatNumbers()">Сохранить</button>
-</div>
+  <section id="called" class="panel">
+    <div class="called-title">Выпавшие номера</div>
+    <div class="called-numbers" id="calledList"></div>
+  </section>
 
-<div id="called">
-  <div class="called-title">Выпавшие номера:</div>
-  <div class="called-numbers" id="calledList"></div>
-</div>
+  <section id="check-block" class="panel">
+    <h3>Проверить свои 5 чисел</h3>
+    <div id="check-inputs">
+      <input type="number" min="1" max="90" inputmode="numeric">
+      <input type="number" min="1" max="90" inputmode="numeric">
+      <input type="number" min="1" max="90" inputmode="numeric">
+      <input type="number" min="1" max="90" inputmode="numeric">
+      <input type="number" min="1" max="90" inputmode="numeric">
+    </div>
+    <button type="button" onclick="checkNumbers()">Проверить</button>
+    <div id="check-results"></div>
+  </section>
 
-<div id="check-block">
-  <h3 style="text-align:center;">Проверить свои 5 чисел</h3>
-  <div id="check-inputs">
-    <input type="number" min="1" max="90">
-    <input type="number" min="1" max="90">
-    <input type="number" min="1" max="90">
-    <input type="number" min="1" max="90">
-    <input type="number" min="1" max="90">
-  </div>
-  <button onclick="checkNumbers()">Проверить</button>
-  <div id="check-results"></div>
-</div>
-
-<button id="restart" onclick="restartGame()">🔁 Перезапуск</button>
+  <button id="restart" type="button" onclick="restartGame()">🔁 Перезапуск</button>
+</main>
 
 <script src="move.js"></script>
 </body>
